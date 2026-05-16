@@ -1,0 +1,10 @@
+# Claude Code
+CLAUDE.md
+DECISIONS.md
+PROGRESS.md
+prompts/
+docs/
+.claude/
+
+# macOS
+.DS_Store
