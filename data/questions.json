@@ -71,6 +71,78 @@
       "difficulty": "easy",
       "topic": "tam-sayilar",
       "useFor": ["warmup"]
+    },
+    {
+      "id": "b001",
+      "type": "multiple-choice",
+      "text": "(12 + 8) ÷ 4 × 3 = ?",
+      "options": ["15", "9", "6", "18"],
+      "correct": "15",
+      "hint": "Parantez önce, sonra soldan sağa.",
+      "explanation": "(12+8) = 20, sonra 20 ÷ 4 = 5, sonra 5 × 3 = 15.",
+      "difficulty": "medium",
+      "topic": "islem-onceligi",
+      "useFor": ["boss-1"]
+    },
+    {
+      "id": "b002",
+      "type": "multiple-choice",
+      "text": "3/4 - 1/3 = ?",
+      "options": ["5/12", "2/1", "1/2", "2/12"],
+      "correct": "5/12",
+      "hint": "Ortak payda bul.",
+      "explanation": "3/4 = 9/12, 1/3 = 4/12. 9/12 - 4/12 = 5/12.",
+      "difficulty": "medium",
+      "topic": "kesirler",
+      "useFor": ["boss-1"]
+    },
+    {
+      "id": "b003",
+      "type": "multiple-choice",
+      "text": "80'in %25'i kaçtır?",
+      "options": ["20", "25", "15", "40"],
+      "correct": "20",
+      "hint": "%25 = 1/4",
+      "explanation": "80 ÷ 4 = 20.",
+      "difficulty": "medium",
+      "topic": "yuzde",
+      "useFor": ["boss-1"]
+    },
+    {
+      "id": "b004",
+      "type": "multiple-choice",
+      "text": "-5 × (-3) = ?",
+      "options": ["15", "-15", "8", "-8"],
+      "correct": "15",
+      "hint": "İki eksi çarpılırsa artı olur.",
+      "explanation": "Negatif × Negatif = Pozitif. -5 × -3 = 15.",
+      "difficulty": "medium",
+      "topic": "tam-sayilar",
+      "useFor": ["boss-1"]
+    },
+    {
+      "id": "b005",
+      "type": "multiple-choice",
+      "text": "7 cm × 4 cm dikdörtgenin alanı?",
+      "options": ["28 cm²", "22 cm²", "11 cm²", "14 cm²"],
+      "correct": "28 cm²",
+      "hint": "Alan = uzun kenar × kısa kenar",
+      "explanation": "7 × 4 = 28 cm².",
+      "difficulty": "medium",
+      "topic": "geometri",
+      "useFor": ["boss-1"]
+    },
+    {
+      "id": "b006",
+      "type": "multiple-choice",
+      "text": "3 elma 9 TL ise 5 elma kaç TL?",
+      "options": ["15 TL", "12 TL", "18 TL", "10 TL"],
+      "correct": "15 TL",
+      "hint": "Önce 1 elmanın fiyatını bul.",
+      "explanation": "1 elma = 9 ÷ 3 = 3 TL. 5 × 3 = 15 TL.",
+      "difficulty": "medium",
+      "topic": "oran-orantı",
+      "useFor": ["boss-1"]
     }
   ]
 }

@@ -98,3 +98,48 @@ body {
 .qp-devam:hover { background: #2ecc71; }
 
 .qp-hidden { display: none; }
+
+/* Boss split-screen */
+body.boss-active {
+  flex-direction: column;
+}
+
+#question-panel.boss-panel {
+  position: static !important;
+  inset: auto !important;
+  width: 800px;
+  height: 300px;
+  background: #16213e;
+  border: 2px solid #e74c3c;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 16px 32px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  z-index: auto;
+}
+
+.bp-box {
+  width: 100%;
+  text-align: center;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+}
+
+.bp-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  font-size: 16px;
+}
+
+.bp-result-title {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.bp-win  { color: #f39c12; }
+.bp-lose { color: #e74c3c; }
