@@ -21,6 +21,10 @@ class RoomScene extends Phaser.Scene {
 
     this.physics.world.setBounds(ROOM_PADDING, ROOM_PADDING, playW, playH);
 
+    if (this.registry.get('coins') === undefined) {
+      this.registry.set('coins', 0);
+    }
+
     const zoneY = ROOM_PADDING + ZONE_SIZE / 2 + ZONE_MARGIN;
     const warmupX = ROOM_PADDING + ZONE_SIZE / 2 + ZONE_MARGIN;
     const shopX = GAME_WIDTH - ROOM_PADDING - ZONE_SIZE / 2 - ZONE_MARGIN;
@@ -103,7 +107,12 @@ class RoomScene extends Phaser.Scene {
         .setVisible(true);
 
       if (Phaser.Input.Keyboard.JustDown(interact) || Phaser.Input.Keyboard.JustDown(interactAlt)) {
-        console.log(`${this.activeZone.zoneType} açıldı`);
+        if (this.activeZone.zoneType === 'warmup') {
+          this.scene.pause();
+          this.scene.launch('WarmupScene');
+        } else {
+          console.log(`${this.activeZone.zoneType} açıldı`);
+        }
       }
     } else {
       this.promptText.setVisible(false);

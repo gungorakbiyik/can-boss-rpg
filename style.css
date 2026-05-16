@@ -16,3 +16,85 @@ body {
 #game canvas {
   display: block;
 }
+
+#question-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  font-family: system-ui, sans-serif;
+}
+
+.qp-box {
+  background: #1a1a2e;
+  border: 2px solid #3498db;
+  border-radius: 10px;
+  padding: 36px 40px;
+  max-width: 520px;
+  width: 90%;
+  text-align: center;
+  color: #fff;
+}
+
+.qp-question {
+  font-size: 22px;
+  margin-bottom: 28px;
+  line-height: 1.4;
+}
+
+.qp-options {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.qp-btn {
+  background: #2c3e50;
+  color: #fff;
+  border: 2px solid #3498db;
+  border-radius: 6px;
+  padding: 10px 22px;
+  font-size: 18px;
+  cursor: pointer;
+  min-width: 80px;
+  transition: background 0.15s;
+}
+
+.qp-btn:hover:not(:disabled) {
+  background: #3498db;
+}
+
+.qp-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.qp-feedback {
+  font-size: 16px;
+  min-height: 44px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.qp-correct { color: #2ecc71; }
+.qp-wrong   { color: #e74c3c; }
+
+.qp-devam {
+  background: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.qp-devam:hover { background: #2ecc71; }
+
+.qp-hidden { display: none; }

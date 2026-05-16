@@ -1,0 +1,76 @@
+{
+  "questions": [
+    {
+      "id": "w001",
+      "type": "multiple-choice",
+      "text": "3 + 5 × 2 = ?",
+      "options": ["16", "13", "10", "11"],
+      "correct": "13",
+      "hint": "Önce çarpmayı yap.",
+      "explanation": "Çarpma toplamadan önce gelir: 5 × 2 = 10, sonra 3 + 10 = 13.",
+      "difficulty": "easy",
+      "topic": "islem-onceligi",
+      "useFor": ["warmup"]
+    },
+    {
+      "id": "w002",
+      "type": "multiple-choice",
+      "text": "24 ÷ 6 + 3 × 2 = ?",
+      "options": ["10", "14", "12", "8"],
+      "correct": "10",
+      "hint": "Önce çarpma ve bölme, sonra toplama.",
+      "explanation": "24 ÷ 6 = 4 ve 3 × 2 = 6, sonra 4 + 6 = 10.",
+      "difficulty": "easy",
+      "topic": "islem-onceligi",
+      "useFor": ["warmup"]
+    },
+    {
+      "id": "w003",
+      "type": "multiple-choice",
+      "text": "1/2 + 1/4 = ?",
+      "options": ["3/4", "2/6", "1/6", "2/4"],
+      "correct": "3/4",
+      "hint": "Paydaları eşitle.",
+      "explanation": "1/2 = 2/4 olur. 2/4 + 1/4 = 3/4.",
+      "difficulty": "easy",
+      "topic": "kesirler",
+      "useFor": ["warmup"]
+    },
+    {
+      "id": "w004",
+      "type": "multiple-choice",
+      "text": "50'nin %20'si kaçtır?",
+      "options": ["10", "20", "25", "5"],
+      "correct": "10",
+      "hint": "%20 = 1/5",
+      "explanation": "50 × 20 ÷ 100 = 1000 ÷ 100 = 10.",
+      "difficulty": "easy",
+      "topic": "yuzde",
+      "useFor": ["warmup"]
+    },
+    {
+      "id": "w005",
+      "type": "multiple-choice",
+      "text": "Kenarı 5 cm olan karenin alanı kaç cm²?",
+      "options": ["25", "20", "10", "15"],
+      "correct": "25",
+      "hint": "Alan = kenar × kenar",
+      "explanation": "Kare alanı = 5 × 5 = 25 cm².",
+      "difficulty": "easy",
+      "topic": "geometri",
+      "useFor": ["warmup"]
+    },
+    {
+      "id": "w006",
+      "type": "multiple-choice",
+      "text": "-3 + 7 = ?",
+      "options": ["4", "-4", "10", "-10"],
+      "correct": "4",
+      "hint": "Sayı doğrusunda -3'ten 7 adım sağa git.",
+      "explanation": "-3'e 7 eklersek: -3 + 7 = 4.",
+      "difficulty": "easy",
+      "topic": "tam-sayilar",
+      "useFor": ["warmup"]
+    }
+  ]
+}

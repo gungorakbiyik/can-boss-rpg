@@ -15,4 +15,6 @@ const CONFIG = {
   WARMUP_COLOR: 0x27ae60,
   SHOP_COLOR: 0xf39c12,
   BOSS_COLOR: 0xe74c3c,
+
+  COIN_WARMUP_REWARD: 5,
 };
