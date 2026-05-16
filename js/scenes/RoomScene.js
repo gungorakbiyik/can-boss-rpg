@@ -30,6 +30,12 @@ class RoomScene extends Phaser.Scene {
     if (this.registry.get('level') === undefined) {
       this.registry.set('level', 1);
     }
+    if (this.registry.get('maxHp') === undefined) {
+      this.registry.set('maxHp', CONFIG.PLAYER_HP);
+    }
+    if (!this.registry.get('inventory')) {
+      this.registry.set('inventory', { hints: 0, extraHp: 0 });
+    }
 
     const zoneY = ROOM_PADDING + ZONE_SIZE / 2 + ZONE_MARGIN;
     const warmupX = ROOM_PADDING + ZONE_SIZE / 2 + ZONE_MARGIN;
@@ -119,8 +125,9 @@ class RoomScene extends Phaser.Scene {
         } else if (this.activeZone.zoneType === 'boss') {
           this.scene.sleep();
           this.scene.launch('BossScene');
-        } else {
-          console.log(`${this.activeZone.zoneType} açıldı`);
+        } else if (this.activeZone.zoneType === 'shop') {
+          this.scene.pause();
+          this.scene.launch('ShopScene');
         }
       }
     } else {

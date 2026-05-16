@@ -143,3 +143,136 @@ body.boss-active {
 
 .bp-win  { color: #f39c12; }
 .bp-lose { color: #e74c3c; }
+
+/* Coin HUD */
+#coin-hud {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #f39c12;
+  font-family: system-ui, sans-serif;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 4px 14px;
+  border-radius: 20px;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* Shop panel */
+#shop-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  font-family: system-ui, sans-serif;
+}
+
+.sp-box {
+  background: #1a1a2e;
+  border: 2px solid #f39c12;
+  border-radius: 10px;
+  padding: 32px 40px;
+  max-width: 480px;
+  width: 90%;
+  color: #fff;
+}
+
+.sp-title {
+  font-size: 24px;
+  color: #f39c12;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.sp-coins {
+  text-align: center;
+  font-size: 16px;
+  color: #f39c12;
+  margin-bottom: 24px;
+}
+
+.sp-items {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.sp-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #2c3e50;
+  border-radius: 8px;
+  padding: 12px 16px;
+  gap: 16px;
+}
+
+.sp-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sp-item-info strong { font-size: 16px; }
+.sp-item-info span   { font-size: 13px; color: #aaa; }
+
+.sp-buy-btn {
+  background: #f39c12;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.sp-buy-btn:hover:not(:disabled) { background: #e67e22; }
+.sp-buy-btn:disabled { opacity: 0.4; cursor: default; }
+
+.sp-close {
+  display: block;
+  width: 100%;
+  background: #2c3e50;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sp-close:hover { background: #34495e; }
+
+/* Boss hint */
+.qp-hint-btn {
+  background: #8e44ad;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 6px;
+  transition: background 0.15s;
+}
+
+.qp-hint-btn:hover:not(:disabled) { background: #9b59b6; }
+.qp-hint-btn:disabled { opacity: 0.5; cursor: default; }
+
+.qp-hint-text {
+  font-size: 13px;
+  color: #bb8fce;
+  min-height: 16px;
+  font-style: italic;
+  margin: 4px 0;
+}

@@ -5,6 +5,7 @@ class BossScene extends Phaser.Scene {
 
   create() {
     this.playerHp = this.registry.get('hp');
+    this.playerMaxHp = this.registry.get('maxHp') || CONFIG.PLAYER_HP;
     this.bossHp = CONFIG.BOSS_HP;
     this.currentQueue = [];
     this.wrongQueue = [];
@@ -46,7 +47,7 @@ class BossScene extends Phaser.Scene {
     const g = this.hpGraphics;
     const W = CONFIG.GAME_WIDTH;
     const BAR_W = 220, BAR_H = 18, BAR_Y = 16;
-    const pPct = Math.max(0, this.playerHp / CONFIG.PLAYER_HP);
+    const pPct = Math.max(0, this.playerHp / this.playerMaxHp);
     const bPct = Math.max(0, this.bossHp / CONFIG.BOSS_HP);
 
     g.clear();
@@ -57,7 +58,7 @@ class BossScene extends Phaser.Scene {
     g.fillStyle(0x333333); g.fillRect(W - 30 - BAR_W, BAR_Y, BAR_W, BAR_H);
     g.fillStyle(this._hpColor(bPct)); g.fillRect(W - 30 - Math.ceil(BAR_W * bPct), BAR_Y, Math.ceil(BAR_W * bPct), BAR_H);
 
-    this.playerHpText.setText(`${this.playerHp} / ${CONFIG.PLAYER_HP}`);
+    this.playerHpText.setText(`${this.playerHp} / ${this.playerMaxHp}`);
     this.bossHpText.setText(`${this.bossHp} / ${CONFIG.BOSS_HP}`);
   }
 
@@ -95,14 +96,20 @@ class BossScene extends Phaser.Scene {
         this.currentQueue = [...this.wrongQueue];
         this.wrongQueue = [];
       } else {
-        this._showGameOver();
-        return;
+        this.retriedOnce = false;
+        this.wrongQueue = [];
+        const boss1 = this.registry.get('allQuestions').filter(q => q.useFor.includes('boss-1'));
+        this.currentQueue = boss1.slice().sort(() => Math.random() - 0.5).slice(0, CONFIG.BOSS_QUESTIONS);
       }
     }
     this._renderQuestion(this.currentQueue.shift());
   }
 
   _renderQuestion(q) {
+    const hintCount = (this.registry.get('inventory') || { hints: 0 }).hints || 0;
+    const hintArea = hintCount > 0
+      ? `<button id="qp-hint" class="qp-hint-btn">Ipucu Kullan (${hintCount})</button>`
+      : '';
     const opts = q.options
       .map(o => `<button class="qp-btn" data-value="${o}">${o}</button>`)
       .join('');
@@ -111,6 +118,8 @@ class BossScene extends Phaser.Scene {
       <div class="bp-box">
         <p class="qp-question">${q.text}</p>
         <div class="qp-options">${opts}</div>
+        <p id="qp-hint-text" class="qp-hint-text"></p>
+        ${hintArea}
         <div id="qp-feedback" class="qp-feedback"></div>
       </div>
     `;
@@ -119,6 +128,16 @@ class BossScene extends Phaser.Scene {
     panel.querySelectorAll('.qp-btn').forEach(btn => {
       btn.addEventListener('click', () => this._handleAnswer(btn.dataset.value, q));
     });
+    const hintBtn = document.getElementById('qp-hint');
+    if (hintBtn) hintBtn.addEventListener('click', () => this._useHint(q, hintBtn));
+  }
+
+  _useHint(q, btn) {
+    const inv = { ...(this.registry.get('inventory') || { hints: 0 }) };
+    inv.hints = Math.max(0, inv.hints - 1);
+    this.registry.set('inventory', inv);
+    document.getElementById('qp-hint-text').textContent = `Ipucu: ${q.hint}`;
+    btn.disabled = true;
   }
 
   _handleAnswer(answer, q) {
@@ -178,7 +197,7 @@ class BossScene extends Phaser.Scene {
     const level = (this.registry.get('level') || 1) + 1;
     this.registry.set('coins', coins);
     this.registry.set('level', level);
-    this.registry.set('hp', CONFIG.PLAYER_HP);
+    this.registry.set('hp', this.registry.get('maxHp'));
     const panel = document.getElementById('question-panel');
     panel.innerHTML = `
       <div class="bp-box bp-result">
@@ -192,7 +211,7 @@ class BossScene extends Phaser.Scene {
   }
 
   _showGameOver() {
-    this.registry.set('hp', CONFIG.PLAYER_HP);
+    this.registry.set('hp', this.registry.get('maxHp'));
     const panel = document.getElementById('question-panel');
     panel.innerHTML = `
       <div class="bp-box bp-result">

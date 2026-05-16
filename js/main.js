@@ -8,5 +8,12 @@ const game = new Phaser.Game({
     default: 'arcade',
     arcade: { gravity: { y: 0 }, debug: false },
   },
-  scene: [RoomScene, WarmupScene, BossScene],
+  scene: [RoomScene, WarmupScene, BossScene, ShopScene],
 });
+
+const coinHud = document.getElementById('coin-hud');
+const syncCoinHUD = (parent, key, value) => {
+  if (key === 'coins') coinHud.textContent = `Coin: ${value}`;
+};
+game.registry.events.on('setdata', syncCoinHUD);
+game.registry.events.on('changedata', syncCoinHUD);
