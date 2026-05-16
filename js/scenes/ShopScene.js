@@ -62,6 +62,13 @@ class ShopScene extends Phaser.Scene {
     }
 
     this.registry.set('inventory', inv);
+    saveScore(
+      this.registry.get('playerName') || 'Anonim',
+      this.registry.get('level') || 1,
+      this.registry.get('coins') || 0,
+      this.registry.get('maxHp'),
+      this.registry.get('inventory')
+    );
     this._renderShop();
   }
 

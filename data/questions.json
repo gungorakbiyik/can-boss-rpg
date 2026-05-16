@@ -82,7 +82,8 @@
       "explanation": "(12+8) = 20, sonra 20 ÷ 4 = 5, sonra 5 × 3 = 15.",
       "difficulty": "medium",
       "topic": "islem-onceligi",
-      "useFor": ["boss-1"]
+      "useFor": ["boss"],
+      "bossLevel": 1
     },
     {
       "id": "b002",
@@ -94,7 +95,8 @@
       "explanation": "3/4 = 9/12, 1/3 = 4/12. 9/12 - 4/12 = 5/12.",
       "difficulty": "medium",
       "topic": "kesirler",
-      "useFor": ["boss-1"]
+      "useFor": ["boss"],
+      "bossLevel": 1
     },
     {
       "id": "b003",
@@ -106,7 +108,8 @@
       "explanation": "80 ÷ 4 = 20.",
       "difficulty": "medium",
       "topic": "yuzde",
-      "useFor": ["boss-1"]
+      "useFor": ["boss"],
+      "bossLevel": 1
     },
     {
       "id": "b004",
@@ -118,7 +121,8 @@
       "explanation": "Negatif × Negatif = Pozitif. -5 × -3 = 15.",
       "difficulty": "medium",
       "topic": "tam-sayilar",
-      "useFor": ["boss-1"]
+      "useFor": ["boss"],
+      "bossLevel": 1
     },
     {
       "id": "b005",
@@ -130,7 +134,8 @@
       "explanation": "7 × 4 = 28 cm².",
       "difficulty": "medium",
       "topic": "geometri",
-      "useFor": ["boss-1"]
+      "useFor": ["boss"],
+      "bossLevel": 1
     },
     {
       "id": "b006",
@@ -142,7 +147,138 @@
       "explanation": "1 elma = 9 ÷ 3 = 3 TL. 5 × 3 = 15 TL.",
       "difficulty": "medium",
       "topic": "oran-orantı",
-      "useFor": ["boss-1"]
+      "useFor": ["boss"],
+      "bossLevel": 1
+    },
+    {
+      "id": "b007",
+      "type": "multiple-choice",
+      "text": "2x + 3 = 11 ise x = ?",
+      "options": ["4", "7", "3", "5"],
+      "correct": "4",
+      "hint": "Önce 3'ü her iki taraftan çıkar.",
+      "explanation": "2x = 11 - 3 = 8, x = 8 ÷ 2 = 4.",
+      "difficulty": "medium",
+      "topic": "denklem",
+      "useFor": ["boss"],
+      "bossLevel": 2
+    },
+    {
+      "id": "b008",
+      "type": "multiple-choice",
+      "text": "120'nin %15'i kaçtır?",
+      "options": ["18", "15", "20", "12"],
+      "correct": "18",
+      "hint": "%15 = %10 + %5",
+      "explanation": "120'nin %10'u = 12. %5'i = 6. 12 + 6 = 18.",
+      "difficulty": "medium",
+      "topic": "yuzde",
+      "useFor": ["boss"],
+      "bossLevel": 2
+    },
+    {
+      "id": "b009",
+      "type": "multiple-choice",
+      "text": "2³ × 3 = ?",
+      "options": ["24", "18", "12", "48"],
+      "correct": "24",
+      "hint": "Önce 2³ hesapla.",
+      "explanation": "2³ = 2 × 2 × 2 = 8. 8 × 3 = 24.",
+      "difficulty": "medium",
+      "topic": "uslu-sayi",
+      "useFor": ["boss"],
+      "bossLevel": 2
+    },
+    {
+      "id": "b010",
+      "type": "multiple-choice",
+      "text": "40, 2:3 oranında paylaşılıyor. Küçük pay kaçtır?",
+      "options": ["16", "24", "15", "20"],
+      "correct": "16",
+      "hint": "Toplam parça sayısı 2+3=5. Her parça 40÷5.",
+      "explanation": "40 ÷ 5 = 8. Küçük pay = 2 × 8 = 16.",
+      "difficulty": "medium",
+      "topic": "oran-orantı",
+      "useFor": ["boss"],
+      "bossLevel": 2
+    },
+    {
+      "id": "b011",
+      "type": "multiple-choice",
+      "text": "Bir sayının 2/3'ü 14'e eşittir. Sayı kaçtır?",
+      "options": ["21", "9", "28", "7"],
+      "correct": "21",
+      "hint": "x'i bulmak için 14'ü 2/3'e böl.",
+      "explanation": "2/3 × x = 14 → x = 14 × 3/2 = 21.",
+      "difficulty": "medium",
+      "topic": "kesirler",
+      "useFor": ["boss"],
+      "bossLevel": 2
+    },
+    {
+      "id": "b012",
+      "type": "multiple-choice",
+      "text": "3(x - 2) = 15 ise x = ?",
+      "options": ["7", "5", "9", "3"],
+      "correct": "7",
+      "hint": "Her iki tarafı önce 3'e böl.",
+      "explanation": "x - 2 = 15 ÷ 3 = 5. x = 5 + 2 = 7.",
+      "difficulty": "hard",
+      "topic": "denklem",
+      "useFor": ["boss"],
+      "bossLevel": 3
+    },
+    {
+      "id": "b013",
+      "type": "multiple-choice",
+      "text": "√(9 + 16) = ?",
+      "options": ["5", "7", "√7", "25"],
+      "correct": "5",
+      "hint": "Önce parantez içini topla.",
+      "explanation": "9 + 16 = 25. √25 = 5.",
+      "difficulty": "hard",
+      "topic": "karekök",
+      "useFor": ["boss"],
+      "bossLevel": 3
+    },
+    {
+      "id": "b014",
+      "type": "multiple-choice",
+      "text": "Tabanı 8 cm, yüksekliği 6 cm olan üçgenin alanı?",
+      "options": ["24 cm²", "48 cm²", "14 cm²", "12 cm²"],
+      "correct": "24 cm²",
+      "hint": "Alan = (taban × yükseklik) ÷ 2",
+      "explanation": "(8 × 6) ÷ 2 = 48 ÷ 2 = 24 cm².",
+      "difficulty": "hard",
+      "topic": "geometri",
+      "useFor": ["boss"],
+      "bossLevel": 3
+    },
+    {
+      "id": "b015",
+      "type": "multiple-choice",
+      "text": "(-4)² - 3 × 5 = ?",
+      "options": ["1", "-1", "31", "11"],
+      "correct": "1",
+      "hint": "Önce (-4)² ve 3×5'i ayrı hesapla.",
+      "explanation": "(-4)² = 16. 3 × 5 = 15. 16 - 15 = 1.",
+      "difficulty": "hard",
+      "topic": "tam-sayilar",
+      "useFor": ["boss"],
+      "bossLevel": 3
+    },
+    {
+      "id": "b016",
+      "type": "multiple-choice",
+      "text": "4 işçi bir işi 12 günde bitiriyor. 8 işçi aynı işi kaç günde bitirir?",
+      "options": ["6", "8", "4", "24"],
+      "correct": "6",
+      "hint": "Ters orantı: işçi artarsa gün azalır.",
+      "explanation": "4 × 12 = 8 × x → x = 48 ÷ 8 = 6 gün.",
+      "difficulty": "hard",
+      "topic": "oran-orantı",
+      "useFor": ["boss"],
+      "bossLevel": 3
     }
   ]
 }

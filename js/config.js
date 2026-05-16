@@ -24,11 +24,23 @@ const CONFIG = {
   BOSS_QUESTIONS: 4,
   BOSS_DAMAGE_PER_CORRECT: 25,
   PLAYER_DAMAGE_PER_WRONG: 25,
-  COIN_BOSS_REWARD: 20,
+  COIN_BOSS_REWARD_PER_LEVEL: 10,
+  BOSS_LEVEL_MEDIUM_FROM: 2,
+  BOSS_LEVEL_HARD_FROM: 4,
 
   SHOP_HP_PRICE: 20,
   SHOP_HP_AMOUNT: 10,
   SHOP_HINT_PRICE: 10,
 
   LEADERBOARD_MAX: 10,
+
+  PLAYER_FIGURE_SCALE: 1.6,
+  PLAYER_BODY_W: 44,
+  PLAYER_BODY_H: 76,
+
+  BOSS_APPEARANCE: {
+    1: { bodyColor: 0x27ae60, scale: 2.0, horns: 0 },
+    2: { bodyColor: 0xe67e22, scale: 2.5, horns: 1 },
+    3: { bodyColor: 0x8b0000, scale: 3.0, horns: 2 },
+  },
 };

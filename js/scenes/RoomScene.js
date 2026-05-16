@@ -6,7 +6,7 @@ class RoomScene extends Phaser.Scene {
   create() {
     const {
       GAME_WIDTH, GAME_HEIGHT, ROOM_PADDING,
-      PLAYER_SIZE, PLAYER_COLOR, WALL_COLOR,
+      PLAYER_COLOR, WALL_COLOR,
       ZONE_SIZE, ZONE_MARGIN, BOSS_ZONE_WIDTH, BOSS_ZONE_HEIGHT,
       WARMUP_COLOR, SHOP_COLOR, BOSS_COLOR,
     } = CONFIG;
@@ -42,13 +42,19 @@ class RoomScene extends Phaser.Scene {
     const shopX = GAME_WIDTH - ROOM_PADDING - ZONE_SIZE / 2 - ZONE_MARGIN;
     const bossY = GAME_HEIGHT - ROOM_PADDING - BOSS_ZONE_HEIGHT / 2 - ZONE_MARGIN;
 
-    this.warmupZone = this._makeZone(warmupX, zoneY, ZONE_SIZE, ZONE_SIZE, WARMUP_COLOR, 'Isınma', 'warmup');
-    this.shopZone = this._makeZone(shopX, zoneY, ZONE_SIZE, ZONE_SIZE, SHOP_COLOR, 'Mağaza', 'shop');
-    this.bossZone = this._makeZone(centerX, bossY, BOSS_ZONE_WIDTH, BOSS_ZONE_HEIGHT, BOSS_COLOR, 'Boss Kapısı', 'boss');
+    this.warmupZone = this._makeZone(warmupX, zoneY, ZONE_SIZE, ZONE_SIZE, WARMUP_COLOR, '📚', 'Isınma', 'warmup');
+    this.shopZone = this._makeZone(shopX, zoneY, ZONE_SIZE, ZONE_SIZE, SHOP_COLOR, '🛒', 'Mağaza', 'shop');
+    this.bossZone = this._makeZone(centerX, bossY, BOSS_ZONE_WIDTH, BOSS_ZONE_HEIGHT, BOSS_COLOR, '🚪', 'Boss Kapısı', 'boss');
 
-    this.player = this.add.rectangle(centerX, centerY, PLAYER_SIZE, PLAYER_SIZE, PLAYER_COLOR);
+    this.player = createPersonFigure(this, centerX, centerY, {
+      bodyColor: PLAYER_COLOR,
+      scale: CONFIG.PLAYER_FIGURE_SCALE,
+    });
     this.physics.add.existing(this.player);
+    this.player.body.setSize(CONFIG.PLAYER_BODY_W, CONFIG.PLAYER_BODY_H);
+    this.player.body.setOffset(-CONFIG.PLAYER_BODY_W / 2, -CONFIG.PLAYER_BODY_H / 2 + 4);
     this.player.body.setCollideWorldBounds(true);
+    this._facingDir = 1;
 
     this.promptText = this.add.text(0, 0, "E'ye bas", {
       fontSize: '16px',
@@ -78,21 +84,78 @@ class RoomScene extends Phaser.Scene {
       interact: Phaser.Input.Keyboard.KeyCodes.E,
       interactAlt: Phaser.Input.Keyboard.KeyCodes.SPACE,
     });
+
+    this.menuKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+    this._menuOpen = false;
+    this._isMoving = false;
+
+    this.menuBtn = this.add.text(ROOM_PADDING + 8, ROOM_PADDING + 8, '≡ Menü', {
+      fontSize: '14px',
+      color: '#ffffff',
+      backgroundColor: '#333333',
+      padding: { x: 8, y: 4 },
+      fontFamily: 'system-ui',
+    }).setDepth(10).setInteractive({ useHandCursor: true });
+    this.menuBtn.on('pointerdown', () => this._openMenu());
   }
 
-  _makeZone(x, y, w, h, color, label, type) {
-    const rect = this.add.rectangle(x, y, w, h, color, 0.8);
+  _makeZone(x, y, w, h, color, icon, label, type) {
+    const rect = this.add.rectangle(x, y, w, h, color, 0.22);
+    rect.setStrokeStyle(2, color);
     this.physics.add.existing(rect, true);
-    this.add.text(x, y, label, {
-      fontSize: '13px',
+    this.add.text(x, y - 8, icon, {
+      fontSize: '38px',
+      fontFamily: 'system-ui, sans-serif',
+    }).setOrigin(0.5).setDepth(1);
+    this.add.text(x, y + h / 2 - 12, label, {
+      fontSize: '12px',
       color: '#ffffff',
       fontFamily: 'system-ui',
+      fontStyle: 'bold',
     }).setOrigin(0.5).setDepth(1);
     rect.zoneType = type;
     return rect;
   }
 
+  _openMenu() {
+    if (this._menuOpen) return;
+    this._menuOpen = true;
+    this.player.body.setVelocity(0, 0);
+    if (this._isMoving) {
+      this._isMoving = false;
+      stopWalking(this.player);
+    }
+
+    const overlay = document.getElementById('ui-overlay');
+    overlay.innerHTML = `
+      <div class="rm-menu-box">
+        <h2>Menü</h2>
+        <button id="menu-resume" class="rm-menu-btn-primary">Devam Et</button>
+        <button id="menu-title" class="rm-menu-btn">Ana Menüye Dön</button>
+      </div>
+    `;
+    overlay.style.display = 'flex';
+
+    document.getElementById('menu-resume').addEventListener('click', () => this._closeMenu());
+    document.getElementById('menu-title').addEventListener('click', () => this._goToTitle());
+  }
+
+  _closeMenu() {
+    this._menuOpen = false;
+    const overlay = document.getElementById('ui-overlay');
+    overlay.style.display = 'none';
+    overlay.innerHTML = '';
+  }
+
+  _goToTitle() {
+    this._closeMenu();
+    this.scene.start('TitleScene');
+  }
+
   update() {
+    if (this._menuOpen) return;
+    if (Phaser.Input.Keyboard.JustDown(this.menuKey)) this._openMenu();
+
     const { up, down, left, right, upArrow, downArrow, leftArrow, rightArrow, interact, interactAlt } = this.keys;
 
     const goUp = up.isDown || upArrow.isDown;
@@ -107,11 +170,24 @@ class RoomScene extends Phaser.Scene {
     if (goUp) vy = -1;
     else if (goDown) vy = 1;
 
-    const scale = (vx !== 0 && vy !== 0) ? Math.SQRT1_2 : 1;
+    const diagScale = (vx !== 0 && vy !== 0) ? Math.SQRT1_2 : 1;
     this.player.body.setVelocity(
-      vx * CONFIG.PLAYER_SPEED * scale,
-      vy * CONFIG.PLAYER_SPEED * scale
+      vx * CONFIG.PLAYER_SPEED * diagScale,
+      vy * CONFIG.PLAYER_SPEED * diagScale
     );
+
+    const nowMoving = vx !== 0 || vy !== 0;
+    if (nowMoving && !this._isMoving) {
+      this._isMoving = true;
+      startWalking(this, this.player);
+    } else if (!nowMoving && this._isMoving) {
+      this._isMoving = false;
+      stopWalking(this.player);
+    }
+    if (vx !== 0 && vx !== this._facingDir) {
+      this._facingDir = vx;
+      faceDirection(this.player, vx);
+    }
 
     if (this.activeZone) {
       this.promptText

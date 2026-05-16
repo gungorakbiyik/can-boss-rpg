@@ -10,17 +10,21 @@ function getScores() {
   }
 }
 
-function saveScore(name, level, coins) {
+function saveScore(name, level, coins, maxHp, inventory) {
   const scores = getScores();
   const idx = scores.findIndex(s => s.name === name);
-  const isBetter = idx < 0
-    || level > scores[idx].level
-    || (level === scores[idx].level && coins > scores[idx].coins);
+  const entry = {
+    name,
+    level,
+    coins,
+    maxHp: maxHp || CONFIG.PLAYER_HP,
+    inventory: inventory || { hints: 0, extraHp: 0 },
+  };
 
-  if (isBetter) {
-    const entry = { name, level, coins };
-    if (idx >= 0) scores[idx] = entry;
-    else scores.push(entry);
+  if (idx >= 0) {
+    scores[idx] = entry;
+  } else {
+    scores.push(entry);
   }
 
   scores.sort((a, b) => b.level - a.level || b.coins - a.coins);
