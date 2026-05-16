@@ -144,6 +144,96 @@ body.boss-active {
 .bp-win  { color: #f39c12; }
 .bp-lose { color: #e74c3c; }
 
+/* Title / Leaderboard */
+#title-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #1a1a2e;
+  justify-content: center;
+  align-items: center;
+  z-index: 300;
+  font-family: system-ui, sans-serif;
+}
+
+.tp-box {
+  width: 480px;
+  max-width: 95%;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.tp-title {
+  font-size: 38px;
+  color: #e74c3c;
+  letter-spacing: 2px;
+  text-align: center;
+  margin: 0;
+}
+
+.tp-start-section {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.tp-input {
+  flex: 1;
+  background: #2c3e50;
+  border: 2px solid #3498db;
+  border-radius: 6px;
+  padding: 10px 14px;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+
+.tp-input:focus { border-color: #5dade2; }
+
+.tp-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.tp-btn:hover { background: #c0392b; }
+
+.tp-leaderboard {
+  width: 100%;
+}
+
+.tp-leaderboard h3 {
+  font-size: 15px;
+  color: #f39c12;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.tp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.tp-table th, .tp-table td {
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid #2c3e50;
+}
+
+.tp-table th  { color: #888; font-weight: normal; }
+.tp-table tbody tr:first-child td { color: #f39c12; }
+
 /* Coin HUD */
 #coin-hud {
   position: fixed;

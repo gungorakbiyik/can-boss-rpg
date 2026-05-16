@@ -198,6 +198,11 @@ class BossScene extends Phaser.Scene {
     this.registry.set('coins', coins);
     this.registry.set('level', level);
     this.registry.set('hp', this.registry.get('maxHp'));
+    saveScore(
+      this.registry.get('playerName') || 'Anonim',
+      this.registry.get('level'),
+      this.registry.get('coins')
+    );
     const panel = document.getElementById('question-panel');
     panel.innerHTML = `
       <div class="bp-box bp-result">
