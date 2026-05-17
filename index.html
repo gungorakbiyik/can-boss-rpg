@@ -4,12 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Can Boss RPG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.min.js"></script>
 </head>
 <body>
-  <div id="coin-hud">Coin: 0</div>
+  <div id="top-hud">
+    <button id="hud-menu-btn">≡ MENÜ</button>
+    <div id="coin-hud">🪙 <span id="coin-amount">0</span><span class="hud-sep">|</span>⚔ Lv <span id="hud-level">1</span></div>
+  </div>
   <div id="game"></div>
+
+  <div id="boss-stage">
+    <div class="battle-area">
+      <div class="hp-bars">
+        <div class="hp-group">
+          <div class="hp-label">👤 <span id="bs-player-name"></span></div>
+          <div class="hp-bar"><div class="hp-fill player-fill" id="bs-player-fill"></div></div>
+          <div class="hp-text" id="bs-player-hp-text"></div>
+        </div>
+        <div class="hp-group boss-hp">
+          <div class="hp-label">Boss 👹</div>
+          <div class="hp-bar"><div class="hp-fill boss-fill" id="bs-boss-fill"></div></div>
+          <div class="hp-text" id="bs-boss-hp-text"></div>
+        </div>
+      </div>
+      <div class="battle-stage">
+        <div class="fighter" id="bs-player-char"></div>
+        <div class="vs-label">VS</div>
+        <div class="fighter" id="bs-boss-char"></div>
+      </div>
+    </div>
+  </div>
+
   <div id="ui-overlay"></div>
   <div id="title-panel"></div>
   <div id="question-panel"></div>

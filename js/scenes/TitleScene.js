@@ -9,9 +9,21 @@ class TitleScene extends Phaser.Scene {
 
   _renderTitle() {
     const scores = getScores();
-    const rows = scores.length > 0
-      ? scores.map((s, i) => `<tr><td>${i + 1}</td><td>${s.name}</td><td>Lv ${s.level}</td><td>${s.coins} coin</td></tr>`).join('')
-      : '<tr><td colspan="4" style="text-align:center;color:#666">Henüz kayıt yok</td></tr>';
+    const MEDALS = ['👑', '🥈', '🥉'];
+    const RANK_COLORS = ['#f0c040', '#c0c0c0', '#cd7f32'];
+    const items = scores.length > 0
+      ? scores.slice(0, 3).map((s, i) => `
+        <div class="tp-lb-item" data-name="${s.name}" style="border-left-color:${RANK_COLORS[i]};color:${RANK_COLORS[i]}">
+          <span class="tp-lb-left">
+            <span class="tp-lb-medal">${MEDALS[i]}</span>
+            <span>${s.name}</span>
+          </span>
+          <span class="tp-lb-right">
+            <span>Lv ${s.level}</span>
+            <span>🪙 ${s.coins}</span>
+          </span>
+        </div>`).join('')
+      : '<div class="tp-lb-empty">Henüz kayıt yok</div>';
 
     const isMobile = window.matchMedia('(pointer: coarse)').matches;
     const mobileBanner = isMobile
@@ -21,18 +33,19 @@ class TitleScene extends Phaser.Scene {
     const panel = document.getElementById('title-panel');
     panel.innerHTML = `
       <div class="tp-box">
-        <h1 class="tp-title">Can Boss RPG</h1>
+        <div class="corner-gem tl">◆</div>
+        <div class="corner-gem tr">◆</div>
+        <div class="corner-gem bl">◆</div>
+        <div class="corner-gem br">◆</div>
+        <h1 class="tp-title">CAN<br>BOSS<br>RPG</h1>
         ${mobileBanner}
         <div class="tp-start-section">
-          <input id="tp-name" class="tp-input" placeholder="Ismin?" maxlength="16" autocomplete="off">
-          <button id="tp-start" class="tp-btn">Oyunu Basla</button>
+          <input id="tp-name" class="tp-input" placeholder="İsmin?" maxlength="16" autocomplete="off">
+          <button id="tp-start" class="tp-btn">BAŞLA ▶</button>
         </div>
         <div class="tp-leaderboard">
-          <h3>En Iyi Oyuncular</h3>
-          <table class="tp-table">
-            <thead><tr><th>#</th><th>Isim</th><th>Level</th><th>Coin</th></tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
+          <h3>⚔ EN İYİ OYUNCULAR ⚔</h3>
+          ${items}
         </div>
       </div>
     `;
@@ -45,6 +58,10 @@ class TitleScene extends Phaser.Scene {
     });
     document.getElementById('tp-start').addEventListener('click', () => {
       this._startGame(nameInput.value.trim());
+    });
+
+    panel.querySelectorAll('.tp-lb-item[data-name]').forEach(item => {
+      item.addEventListener('click', () => this._startGame(item.dataset.name));
     });
   }
 

@@ -4,131 +4,97 @@ class BossScene extends Phaser.Scene {
   }
 
   create() {
-    this.playerHp = this.registry.get('hp');
+    this.playerHp    = this.registry.get('hp');
     this.playerMaxHp = this.registry.get('maxHp') || CONFIG.PLAYER_HP;
-    this.bossHp = CONFIG.BOSS_HP;
-    this.displayPlayerHp = this.playerHp;
-    this.displayBossHp = this.bossHp;
+    this.bossHp      = CONFIG.BOSS_HP;
     this.currentQueue = [];
-    this.wrongQueue = [];
-    this.retriedOnce = false;
-    this._escWarning = null;
+    this.wrongQueue   = [];
+    this.retriedOnce  = false;
 
-    this.scale.resize(CONFIG.GAME_WIDTH, CONFIG.BOSS_SCENE_HEIGHT);
     document.body.classList.add('boss-active');
+    document.getElementById('game').style.display = 'none';
 
-    this._setupArena();
+    this._setupHtmlArena();
     this._loadQuestions();
 
     this.input.keyboard.on('keydown-ESC', () => this._showEscWarning());
   }
 
-  _setupArena() {
-    const W = CONFIG.GAME_WIDTH;
-    const H = CONFIG.BOSS_SCENE_HEIGHT;
-    const midX = W / 2;
-    const labelStyle = { fontSize: '12px', color: '#cccccc', fontFamily: 'system-ui' };
-    const numStyle = { fontSize: '11px', color: '#999999', fontFamily: 'system-ui' };
-
-    this.add.rectangle(midX, H / 2, W, H, 0x1a1a2e);
-    this.add.text(midX, H * 0.46, 'VS', { fontSize: '28px', color: '#ffffff', fontFamily: 'system-ui' }).setOrigin(0.5);
-    this.add.text(30, 3, 'Oyuncu', labelStyle);
-    this.add.text(W - 30, 3, 'Boss', labelStyle).setOrigin(1, 0);
-
-    this.playerPos = { x: midX - 250, y: H * 0.72 };
-    this.bossPos = { x: midX + 250, y: H * 0.72 };
-
-    this.playerFigure = createPersonFigure(this, this.playerPos.x, this.playerPos.y, {
-      bodyColor: CONFIG.PLAYER_COLOR,
-      scale: CONFIG.PLAYER_FIGURE_SCALE,
-    });
-    faceDirection(this.playerFigure, +1);
-
-    const bossLvl = this._getBossLevel(this.registry.get('level') || 1);
-    this.bossAppearance = CONFIG.BOSS_APPEARANCE[bossLvl];
-    this.bossFigure = createPersonFigure(this, this.bossPos.x, this.bossPos.y, {
-      bodyColor: this.bossAppearance.bodyColor,
-      headColor: 0x8b4513,
-      scale: this.bossAppearance.scale,
-      horns: this.bossAppearance.horns,
-    });
-    faceDirection(this.bossFigure, -1);
-
-    this.hpGraphics = this.add.graphics();
-    this.playerHpText = this.add.text(30, 38, '', numStyle);
-    this.bossHpText = this.add.text(W - 30, 38, '', numStyle).setOrigin(1, 0);
-
-    this._drawHpBars();
+  _playerSVG(size) {
+    return `<svg width="${size}" height="${Math.round(size * 1.45)}" viewBox="0 0 40 58"
+        style="filter:drop-shadow(0 0 6px rgba(52,152,219,0.5));transition:filter .3s">
+      <circle cx="20" cy="11" r="9.5" fill="#ffd59e" stroke="#c8a87a" stroke-width="1"/>
+      <circle cx="16.5" cy="10" r="1.8" fill="#1e3448"/>
+      <circle cx="23.5" cy="10" r="1.8" fill="#1e3448"/>
+      <path d="M17 13 Q20 11 23 13" stroke="#7a90a8" stroke-width="1" fill="none"/>
+      <rect x="12" y="22" width="16" height="16" rx="2" fill="#3498db"/>
+      <rect x="4"  y="22" width="7"  height="4"  rx="2" fill="#3498db"/>
+      <rect x="29" y="22" width="7"  height="4"  rx="2" fill="#3498db"/>
+      <rect x="13" y="38" width="6"  height="13" rx="2" fill="#8B5E3C"/>
+      <rect x="21" y="38" width="6"  height="13" rx="2" fill="#8B5E3C"/>
+    </svg>`;
   }
 
-  _drawHpBars() {
-    const g = this.hpGraphics;
-    const W = CONFIG.GAME_WIDTH;
-    const BAR_W = 220, BAR_H = 18, BAR_Y = 16;
-    const pHp = Math.round(this.displayPlayerHp);
-    const bHp = Math.round(this.displayBossHp);
-    const pPct = Math.max(0, pHp / this.playerMaxHp);
-    const bPct = Math.max(0, bHp / CONFIG.BOSS_HP);
-
-    g.clear();
-
-    g.fillStyle(0x333333); g.fillRect(30, BAR_Y, BAR_W, BAR_H);
-    g.fillStyle(this._hpColor(pPct)); g.fillRect(30, BAR_Y, Math.ceil(BAR_W * pPct), BAR_H);
-
-    g.fillStyle(0x333333); g.fillRect(W - 30 - BAR_W, BAR_Y, BAR_W, BAR_H);
-    g.fillStyle(this._hpColor(bPct)); g.fillRect(W - 30 - Math.ceil(BAR_W * bPct), BAR_Y, Math.ceil(BAR_W * bPct), BAR_H);
-
-    this.playerHpText.setText(`${pHp} / ${this.playerMaxHp}`);
-    this.bossHpText.setText(`${bHp} / ${CONFIG.BOSS_HP}`);
+  _bossSVG(size, level) {
+    const bodyColor = level >= 3 ? '#7c3aed' : level >= 2 ? '#dc2626' : '#b91c1c';
+    return `<svg width="${size}" height="${Math.round(size * 1.5)}" viewBox="0 0 50 75"
+        style="filter:drop-shadow(0 0 8px ${bodyColor});transition:filter .3s">
+      <polygon points="13,20 8,3 19,16"  fill="#f0c040" stroke="#c8a020" stroke-width="1"/>
+      <polygon points="37,20 42,3 31,16" fill="#f0c040" stroke="#c8a020" stroke-width="1"/>
+      <circle cx="25" cy="24" r="14" fill="#8B5E3C" stroke="#5a3e2b" stroke-width="1.5"/>
+      <ellipse cx="19" cy="23" rx="3" ry="3.5" fill="#ff4500"/>
+      <ellipse cx="31" cy="23" rx="3" ry="3.5" fill="#ff4500"/>
+      <circle cx="19" cy="24" r="1.2" fill="#0f1419"/>
+      <circle cx="31" cy="24" r="1.2" fill="#0f1419"/>
+      <path d="M18 31 L22 34 L25 31 L28 34 L32 31"
+            stroke="#1a0a00" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <rect x="12" y="40" width="26" height="22" rx="2" fill="${bodyColor}"/>
+      <rect x="2"  y="40" width="9"  height="5"  rx="2" fill="${bodyColor}"/>
+      <rect x="39" y="40" width="9"  height="5"  rx="2" fill="${bodyColor}"/>
+      <rect x="0"  y="43" width="7"  height="6"  rx="1" fill="#8B5E3C"/>
+      <rect x="43" y="43" width="7"  height="6"  rx="1" fill="#8B5E3C"/>
+      <rect x="14" y="62" width="9"  height="12" rx="2" fill="#8B5E3C"/>
+      <rect x="27" y="62" width="9"  height="12" rx="2" fill="#8B5E3C"/>
+    </svg>`;
   }
 
-  _tweenHp(target, isPlayer) {
-    const key = isPlayer ? 'displayPlayerHp' : 'displayBossHp';
-    this.tweens.add({
-      targets: this,
-      [key]: target,
-      duration: 350,
-      ease: 'Power2',
-      onUpdate: () => this._drawHpBars(),
-    });
+  _setupHtmlArena() {
+    const playerName = this.registry.get('playerName') || 'Oyuncu';
+    const level      = this.registry.get('level') || 1;
+    const bossLvl    = this._getBossLevel(level);
+
+    document.getElementById('bs-player-name').textContent = playerName;
+    document.getElementById('bs-player-char').innerHTML   = this._playerSVG(78);
+    document.getElementById('bs-boss-char').innerHTML     = this._bossSVG(88, bossLvl);
+    document.getElementById('boss-stage').style.display  = 'flex';
+
+    this._updateHpBars();
   }
 
-  _burstStars(x, y, color) {
-    const count = 7;
-    for (let i = 0; i < count; i++) {
-      const angle = (i / count) * Math.PI * 2;
-      const dot = this.add.circle(x, y, 5, color);
-      this.tweens.add({
-        targets: dot,
-        x: x + Math.cos(angle) * 55,
-        y: y + Math.sin(angle) * 45,
-        alpha: 0,
-        scaleX: 0.1,
-        scaleY: 0.1,
-        duration: 550,
-        ease: 'Power2',
-        onComplete: () => dot.destroy(),
-      });
-    }
+  _updateHpBars() {
+    const pPct = Math.max(0, (this.playerHp / this.playerMaxHp) * 100);
+    const bPct = Math.max(0, (this.bossHp   / CONFIG.BOSS_HP)   * 100);
+
+    document.getElementById('bs-player-fill').style.width    = `${pPct}%`;
+    document.getElementById('bs-boss-fill').style.width      = `${bPct}%`;
+    document.getElementById('bs-player-hp-text').textContent = `${Math.round(this.playerHp)} / ${this.playerMaxHp}`;
+    document.getElementById('bs-boss-hp-text').textContent   = `${Math.round(this.bossHp)} / ${CONFIG.BOSS_HP}`;
   }
 
   _showEscWarning() {
-    if (this._escWarning) this._escWarning.destroy();
-    this._escWarning = this.add.text(
-      CONFIG.GAME_WIDTH / 2,
-      CONFIG.BOSS_SCENE_HEIGHT / 2 - 50,
-      'Savasdan kacilmaz!',
-      { fontSize: '18px', color: '#e74c3c', backgroundColor: '#000000', padding: { x: 12, y: 6 }, fontFamily: 'system-ui' }
-    ).setOrigin(0.5).setDepth(20);
+    const msg = document.getElementById('bp-battle-message');
+    if (!msg) return;
+    msg.textContent  = '⚠ Savaştan kaçılamaz!';
+    msg.style.color  = '#ec4899';
     this.time.delayedCall(1400, () => {
-      if (this._escWarning) { this._escWarning.destroy(); this._escWarning = null; }
+      if (msg) { msg.textContent = ''; msg.style.color = ''; }
     });
   }
 
-  _hpColor(pct) {
-    if (pct > 0.5) return 0x2ecc71;
-    if (pct > 0.25) return 0xf39c12;
-    return 0xe74c3c;
+  _getBossLevel(playerLevel) {
+    if (playerLevel < CONFIG.BOSS_LEVEL_MEDIUM_FROM) return 1;
+    if (playerLevel < CONFIG.BOSS_LEVEL_HARD_FROM)   return 2;
+    return 3;
   }
 
   _loadQuestions() {
@@ -145,12 +111,6 @@ class BossScene extends Phaser.Scene {
     }
   }
 
-  _getBossLevel(playerLevel) {
-    if (playerLevel < CONFIG.BOSS_LEVEL_MEDIUM_FROM) return 1;
-    if (playerLevel < CONFIG.BOSS_LEVEL_HARD_FROM) return 2;
-    return 3;
-  }
-
   _buildQueue(allQuestions) {
     const bossLvl = this._getBossLevel(this.registry.get('level') || 1);
     this.bossPool = allQuestions.filter(q => q.useFor.includes('boss') && q.bossLevel === bossLvl);
@@ -162,12 +122,12 @@ class BossScene extends Phaser.Scene {
   _nextQuestion() {
     if (this.currentQueue.length === 0) {
       if (!this.retriedOnce && this.wrongQueue.length > 0) {
-        this.retriedOnce = true;
+        this.retriedOnce  = true;
         this.currentQueue = [...this.wrongQueue];
-        this.wrongQueue = [];
+        this.wrongQueue   = [];
       } else {
-        this.retriedOnce = false;
-        this.wrongQueue = [];
+        this.retriedOnce  = false;
+        this.wrongQueue   = [];
         this.currentQueue = this.bossPool.slice().sort(() => Math.random() - 0.5).slice(0, CONFIG.BOSS_QUESTIONS);
       }
     }
@@ -176,15 +136,21 @@ class BossScene extends Phaser.Scene {
 
   _renderQuestion(q) {
     const hintCount = (this.registry.get('inventory') || { hints: 0 }).hints || 0;
-    const hintArea = hintCount > 0
-      ? `<button id="qp-hint" class="qp-hint-btn">Ipucu Kullan (${hintCount})</button>`
+    const hintArea  = hintCount > 0
+      ? `<button id="qp-hint" class="qp-hint-btn">💡 İpucu Kullan (${hintCount})</button>`
       : '';
+    const LABELS = ['A', 'B', 'C', 'D'];
     const opts = q.options
-      .map(o => `<button class="qp-btn" data-value="${o}">${o}</button>`)
+      .map((o, i) => `<button class="qp-btn" data-value="${o}">
+        <span class="qp-btn-label">${LABELS[i]}</span>
+        <span>${o}</span>
+      </button>`)
       .join('');
+
     const panel = document.getElementById('question-panel');
     panel.innerHTML = `
       <div class="bp-box">
+        <div id="bp-battle-message" class="battle-message"></div>
         <p class="qp-question">${q.text}</p>
         <div class="qp-options">${opts}</div>
         <p id="qp-hint-text" class="qp-hint-text"></p>
@@ -194,6 +160,7 @@ class BossScene extends Phaser.Scene {
     `;
     panel.classList.add('boss-panel');
     panel.style.display = 'flex';
+
     panel.querySelectorAll('.qp-btn').forEach(btn => {
       btn.addEventListener('click', () => this._handleAnswer(btn.dataset.value, q));
     });
@@ -202,36 +169,39 @@ class BossScene extends Phaser.Scene {
   }
 
   _useHint(q, btn) {
-    const inv = { ...(this.registry.get('inventory') || { hints: 0 }) };
-    inv.hints = Math.max(0, inv.hints - 1);
+    const inv  = { ...(this.registry.get('inventory') || { hints: 0 }) };
+    inv.hints  = Math.max(0, inv.hints - 1);
     this.registry.set('inventory', inv);
-    document.getElementById('qp-hint-text').textContent = `Ipucu: ${q.hint}`;
+    document.getElementById('qp-hint-text').textContent = `İpucu: ${q.hint}`;
     btn.disabled = true;
   }
 
   _handleAnswer(answer, q) {
-    document.querySelectorAll('.qp-btn').forEach(b => (b.disabled = true));
-    const feedback = document.getElementById('qp-feedback');
+    document.querySelectorAll('.qp-btn').forEach(b => {
+      b.disabled = true;
+      if (b.dataset.value === q.correct) b.classList.add('correct');
+      else if (b.dataset.value === answer) b.classList.add('wrong');
+    });
+
+    const feedback  = document.getElementById('qp-feedback');
+    const battleMsg = document.getElementById('bp-battle-message');
 
     if (answer === q.correct) {
       this.bossHp = Math.max(0, this.bossHp - CONFIG.BOSS_DAMAGE_PER_CORRECT);
-      this._tweenHp(this.bossHp, false);
+      this._updateHpBars();
       this._animateBossHit();
-      this._burstStars(this.bossPos.x, this.bossPos.y - 20, 0xf39c12);
-      feedback.textContent = 'Vurus! Boss hasar aldi.';
-      feedback.className = 'qp-feedback qp-correct';
+      if (battleMsg) battleMsg.textContent = `⚔ Vuruş! Boss'a ${CONFIG.BOSS_DAMAGE_PER_CORRECT} hasar!`;
       if (this.bossHp <= 0) {
-        this._animateBossDeath();
         this.time.delayedCall(900, () => this._showVictory());
         return;
       }
     } else {
       this.playerHp = Math.max(0, this.playerHp - CONFIG.PLAYER_DAMAGE_PER_WRONG);
       this.wrongQueue.push(q);
-      this._tweenHp(this.playerHp, true);
+      this._updateHpBars();
       this._animatePlayerHit();
-      feedback.innerHTML = `Yanlış! Doğrusu: <strong>${q.correct}</strong> (−${CONFIG.PLAYER_DAMAGE_PER_WRONG} HP)`;
-      feedback.className = 'qp-feedback qp-wrong';
+      feedback.innerHTML = `Yanlış! Doğrusu: <strong>${q.correct}</strong>`;
+      if (battleMsg) battleMsg.textContent = `💔 Yanlış! −${CONFIG.PLAYER_DAMAGE_PER_WRONG} HP`;
       if (this.playerHp <= 0) {
         this.time.delayedCall(900, () => this._showGameOver());
         return;
@@ -241,60 +211,50 @@ class BossScene extends Phaser.Scene {
   }
 
   _animateBossHit() {
-    const bx = this.bossPos.x;
-    this.tweens.add({ targets: this.bossFigure, x: { from: bx - 10, to: bx }, duration: 60, yoyo: true, repeat: 3 });
-    this.tweens.add({ targets: this.playerFigure, x: { from: this.playerPos.x, to: this.playerPos.x + 45 }, duration: 120, yoyo: true, ease: 'Power2' });
-    this.bossFigure.parts.body.setFillStyle(0xff6666);
-    this.time.delayedCall(500, () => this.bossFigure.parts.body.setFillStyle(this.bossAppearance.bodyColor));
+    const el = document.getElementById('bs-boss-char');
+    if (!el) return;
+    el.classList.add('hit-shake');
+    el.querySelector('svg').style.filter = 'drop-shadow(0 0 16px #4ade80)';
+    this.time.delayedCall(400, () => {
+      el.classList.remove('hit-shake');
+      const bossLvl   = this._getBossLevel(this.registry.get('level') || 1);
+      const bodyColor = bossLvl >= 3 ? '#7c3aed' : bossLvl >= 2 ? '#dc2626' : '#b91c1c';
+      el.querySelector('svg').style.filter = `drop-shadow(0 0 8px ${bodyColor})`;
+    });
   }
 
   _animatePlayerHit() {
-    const px = this.playerPos.x;
-    this.tweens.add({ targets: this.playerFigure, x: { from: px - 8, to: px }, duration: 60, yoyo: true, repeat: 2 });
-    this.playerFigure.parts.body.setFillStyle(0xff4444);
-    this.time.delayedCall(400, () => this.playerFigure.parts.body.setFillStyle(CONFIG.PLAYER_COLOR));
-  }
-
-  _animateBossDeath() {
-    const curX = this.bossFigure.scaleX;
-    const curY = this.bossFigure.scaleY;
-    this.tweens.add({
-      targets: this.bossFigure,
-      alpha: 0,
-      scaleX: curX * 1.8,
-      scaleY: curY * 1.8,
-      duration: 600,
-      ease: 'Power2',
+    const el = document.getElementById('bs-player-char');
+    if (!el) return;
+    el.classList.add('hit-shake');
+    el.querySelector('svg').style.filter = 'drop-shadow(0 0 16px #ec4899)';
+    this.time.delayedCall(400, () => {
+      el.classList.remove('hit-shake');
+      el.querySelector('svg').style.filter = 'drop-shadow(0 0 6px rgba(52,152,219,0.5))';
     });
-    this._burstStars(this.bossPos.x, this.bossPos.y, 0xf39c12);
-    this._burstStars(this.bossPos.x, this.bossPos.y, 0xe74c3c);
-    this.add.text(CONFIG.GAME_WIDTH / 2, CONFIG.BOSS_SCENE_HEIGHT / 2, 'Boss Yenildi!', {
-      fontSize: '30px', color: '#f39c12', fontFamily: 'system-ui',
-    }).setOrigin(0.5);
   }
 
   _showVictory() {
     const currentLevel = this.registry.get('level') || 1;
-    const coinReward = currentLevel * CONFIG.COIN_BOSS_REWARD_PER_LEVEL;
-    const newCoins = (this.registry.get('coins') || 0) + coinReward;
-    const newLevel = currentLevel + 1;
+    const coinReward   = currentLevel * CONFIG.COIN_BOSS_REWARD_PER_LEVEL;
+    const newCoins     = (this.registry.get('coins') || 0) + coinReward;
+    const newLevel     = currentLevel + 1;
     this.registry.set('coins', newCoins);
     this.registry.set('level', newLevel);
     this.registry.set('hp', this.registry.get('maxHp'));
     saveScore(
       this.registry.get('playerName') || 'Anonim',
-      newLevel,
-      newCoins,
+      newLevel, newCoins,
       this.registry.get('maxHp'),
       this.registry.get('inventory')
     );
     const panel = document.getElementById('question-panel');
     panel.innerHTML = `
       <div class="bp-box bp-result">
-        <p class="bp-result-title bp-win">Boss Yenildi!</p>
-        <p>+${coinReward} coin kazandın! (Toplam: ${newCoins})</p>
+        <p class="bp-result-title bp-win">🏆 Boss Yenildi!</p>
+        <p>+${coinReward} 🪙 coin kazandın! (Toplam: ${newCoins})</p>
         <p>Level ${newLevel}'e geçtin.</p>
-        <button id="bp-continue" class="qp-devam">Devam</button>
+        <button id="bp-continue" class="qp-devam">Devam →</button>
       </div>
     `;
     document.getElementById('bp-continue').addEventListener('click', () => this._returnToRoom());
@@ -305,9 +265,9 @@ class BossScene extends Phaser.Scene {
     const panel = document.getElementById('question-panel');
     panel.innerHTML = `
       <div class="bp-box bp-result">
-        <p class="bp-result-title bp-lose">Yenildin!</p>
+        <p class="bp-result-title bp-lose">💀 Yenildin!</p>
         <p>Boss'u yenemesek de, devam et.</p>
-        <button id="bp-continue" class="qp-devam">Odaya Don</button>
+        <button id="bp-continue" class="qp-devam">Odaya Dön →</button>
       </div>
     `;
     document.getElementById('bp-continue').addEventListener('click', () => this._returnToRoom());
@@ -317,8 +277,9 @@ class BossScene extends Phaser.Scene {
     const panel = document.getElementById('question-panel');
     panel.style.display = 'none';
     panel.classList.remove('boss-panel');
+    document.getElementById('boss-stage').style.display = 'none';
+    document.getElementById('game').style.display       = '';
     document.body.classList.remove('boss-active');
-    this.scale.resize(CONFIG.GAME_WIDTH, CONFIG.GAME_HEIGHT);
     this.scene.stop();
     this.scene.wake('RoomScene');
   }

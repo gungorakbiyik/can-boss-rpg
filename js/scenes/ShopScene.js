@@ -15,8 +15,8 @@ class ShopScene extends Phaser.Scene {
 
     panel.innerHTML = `
       <div class="sp-box">
-        <h2 class="sp-title">Magaza</h2>
-        <p class="sp-coins">Coin: ${coins}</p>
+        <h2 class="sp-title">🏪 MAĞAZA</h2>
+        <p class="sp-coins">🪙 ${coins}</p>
         <div class="sp-items">
           ${this._itemCard('+10 Max HP', `Mevcut max HP: ${maxHp}. Kalici.`, CONFIG.SHOP_HP_PRICE, 'hp', coins)}
           ${this._itemCard('Ipucu (1 adet)', `Sahip olunan: ${inv.hints} adet.`, CONFIG.SHOP_HINT_PRICE, 'hint', coins)}
@@ -32,14 +32,16 @@ class ShopScene extends Phaser.Scene {
   }
 
   _itemCard(name, desc, price, itemKey, coins) {
+    const icon = itemKey === 'hp' ? '🧪' : '📜';
     const disabled = coins < price ? 'disabled' : '';
     return `
       <div class="sp-item">
+        <span class="sp-item-icon">${icon}</span>
         <div class="sp-item-info">
           <strong>${name}</strong>
           <span>${desc}</span>
         </div>
-        <button class="sp-buy-btn" data-item="${itemKey}" ${disabled}>${price} coin</button>
+        <button class="sp-buy-btn" data-item="${itemKey}" ${disabled}>🪙 ${price}</button>
       </div>
     `;
   }

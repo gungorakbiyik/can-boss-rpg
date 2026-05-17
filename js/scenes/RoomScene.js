@@ -89,19 +89,32 @@ class RoomScene extends Phaser.Scene {
     this._menuOpen = false;
     this._isMoving = false;
 
-    this.menuBtn = this.add.text(ROOM_PADDING + 8, ROOM_PADDING + 8, '≡ Menü', {
-      fontSize: '14px',
-      color: '#ffffff',
-      backgroundColor: '#333333',
-      padding: { x: 8, y: 4 },
-      fontFamily: 'system-ui',
-    }).setDepth(10).setInteractive({ useHandCursor: true });
-    this.menuBtn.on('pointerdown', () => this._openMenu());
+    this._hudMenuBtn = document.getElementById('hud-menu-btn');
+    this._menuClickHandler = () => this._openMenu();
+    this._hudMenuBtn.addEventListener('click', this._menuClickHandler);
+    this._hudMenuBtn.style.display = 'flex';
+  }
+
+  shutdown() {
+    if (this._hudMenuBtn && this._menuClickHandler) {
+      this._hudMenuBtn.removeEventListener('click', this._menuClickHandler);
+      this._hudMenuBtn.style.display = 'none';
+    }
+  }
+
+  _enterZone(type) {
+    if (this._menuOpen) return;
+    if (type === 'warmup') { this.scene.pause(); this.scene.launch('WarmupScene'); }
+    else if (type === 'boss') { this.scene.sleep(); this.scene.launch('BossScene'); }
+    else if (type === 'shop') { this.scene.pause(); this.scene.launch('ShopScene'); }
   }
 
   _makeZone(x, y, w, h, color, icon, label, type) {
     const rect = this.add.rectangle(x, y, w, h, color, 0.22);
     rect.setStrokeStyle(2, color);
+    rect.setInteractive(new Phaser.Geom.Rectangle(-w / 2, -h / 2, w, h), Phaser.Geom.Rectangle.Contains);
+    rect.input.cursor = 'pointer';
+    rect.on('pointerdown', () => this._enterZone(type));
     this.physics.add.existing(rect, true);
     this.add.text(x, y - 8, icon, {
       fontSize: '38px',
@@ -195,16 +208,7 @@ class RoomScene extends Phaser.Scene {
         .setVisible(true);
 
       if (Phaser.Input.Keyboard.JustDown(interact) || Phaser.Input.Keyboard.JustDown(interactAlt)) {
-        if (this.activeZone.zoneType === 'warmup') {
-          this.scene.pause();
-          this.scene.launch('WarmupScene');
-        } else if (this.activeZone.zoneType === 'boss') {
-          this.scene.sleep();
-          this.scene.launch('BossScene');
-        } else if (this.activeZone.zoneType === 'shop') {
-          this.scene.pause();
-          this.scene.launch('ShopScene');
-        }
+        this._enterZone(this.activeZone.zoneType);
       }
     } else {
       this.promptText.setVisible(false);

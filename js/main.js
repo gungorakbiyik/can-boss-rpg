@@ -11,9 +11,12 @@ const game = new Phaser.Game({
   scene: [TitleScene, RoomScene, WarmupScene, BossScene, ShopScene],
 });
 
-const coinHud = document.getElementById('coin-hud');
-const syncCoinHUD = (parent, key, value) => {
-  if (key === 'coins') coinHud.textContent = `Coin: ${value}`;
+const coinAmount = document.getElementById('coin-amount');
+const hudLevel   = document.getElementById('hud-level');
+
+const syncHUD = (parent, key, value) => {
+  if (key === 'coins') coinAmount.textContent = value;
+  if (key === 'level')  hudLevel.textContent  = value;
 };
-game.registry.events.on('setdata', syncCoinHUD);
-game.registry.events.on('changedata', syncCoinHUD);
+game.registry.events.on('setdata',    syncHUD);
+game.registry.events.on('changedata', syncHUD);
